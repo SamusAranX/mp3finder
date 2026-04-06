@@ -1,0 +1,86 @@
+use crate::mpeg::enums::Bitrate;
+
+pub const BITRATES_V1_L1: [Bitrate; 14] = [
+	Bitrate::Kbps(32),
+	Bitrate::Kbps(64),
+	Bitrate::Kbps(96),
+	Bitrate::Kbps(128),
+	Bitrate::Kbps(160),
+	Bitrate::Kbps(192),
+	Bitrate::Kbps(224),
+	Bitrate::Kbps(256),
+	Bitrate::Kbps(288),
+	Bitrate::Kbps(320),
+	Bitrate::Kbps(352),
+	Bitrate::Kbps(384),
+	Bitrate::Kbps(416),
+	Bitrate::Kbps(448),
+];
+
+pub const BITRATES_V1_L2: [Bitrate; 14] = [
+	Bitrate::Kbps(32),
+	Bitrate::Kbps(48),
+	Bitrate::Kbps(56),
+	Bitrate::Kbps(64),
+	Bitrate::Kbps(80),
+	Bitrate::Kbps(96),
+	Bitrate::Kbps(112),
+	Bitrate::Kbps(128),
+	Bitrate::Kbps(160),
+	Bitrate::Kbps(192),
+	Bitrate::Kbps(224),
+	Bitrate::Kbps(256),
+	Bitrate::Kbps(320),
+	Bitrate::Kbps(384),
+];
+
+pub const BITRATES_V1_L3: [Bitrate; 14] = [
+	Bitrate::Kbps(32),
+	Bitrate::Kbps(40),
+	Bitrate::Kbps(48),
+	Bitrate::Kbps(56),
+	Bitrate::Kbps(64),
+	Bitrate::Kbps(80),
+	Bitrate::Kbps(96),
+	Bitrate::Kbps(112),
+	Bitrate::Kbps(128),
+	Bitrate::Kbps(160),
+	Bitrate::Kbps(192),
+	Bitrate::Kbps(224),
+	Bitrate::Kbps(256),
+	Bitrate::Kbps(320),
+];
+
+pub const BITRATES_V2_L1: [Bitrate; 14] = [
+	Bitrate::Kbps(32),
+	Bitrate::Kbps(48),
+	Bitrate::Kbps(56),
+	Bitrate::Kbps(64),
+	Bitrate::Kbps(80),
+	Bitrate::Kbps(96),
+	Bitrate::Kbps(112),
+	Bitrate::Kbps(128),
+	Bitrate::Kbps(144),
+	Bitrate::Kbps(160),
+	Bitrate::Kbps(176),
+	Bitrate::Kbps(192),
+	Bitrate::Kbps(224),
+	Bitrate::Kbps(256),
+];
+
+pub const BITRATES_V2_L2_L3: [Bitrate; 14] = [
+	Bitrate::Kbps(8),
+	Bitrate::Kbps(16),
+	Bitrate::Kbps(24),
+	Bitrate::Kbps(32),
+	Bitrate::Kbps(40),
+	Bitrate::Kbps(48),
+	Bitrate::Kbps(56),
+	Bitrate::Kbps(64),
+	Bitrate::Kbps(80),
+	Bitrate::Kbps(96),
+	Bitrate::Kbps(112),
+	Bitrate::Kbps(128),
+	Bitrate::Kbps(144),
+	Bitrate::Kbps(160),
+];
