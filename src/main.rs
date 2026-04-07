@@ -4,11 +4,10 @@ mod mpeg;
 use crate::cli::Cli;
 use crate::mpeg::Frame;
 use clap::Parser;
-use deku::{DekuContainerRead, DekuContainerWrite, DekuError};
+use deku::{DekuContainerRead, DekuContainerWrite};
 use std::fs::File;
-use std::io::{BufReader, Seek, SeekFrom, Write};
+use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
 use std::path::Path;
-use std::time::Instant;
 
 fn main() {
 	let cli = Cli::parse();
@@ -27,36 +26,46 @@ fn work(in_file: &Path, out_dir: &Path, frame_limit: usize) {
 	let mut frame_index = 1;
 	let mut frames_start: u64 = 0;
 
+	let last_valid_pos = file_length - 4;
+
 	loop {
 		let pos = reader
 			.stream_position()
 			.expect("The reader got disoriented!");
 
-		if pos == file_length - 3 {
+		if pos > last_valid_pos {
+			// we're close enough to EOF that no more frames can be expected
 			break;
 		}
 
-		let mut got_useful_frame = false;
-		match Frame::from_reader((&mut reader, 0)) {
-			Ok((_, frame)) => 'frame: {
-				if !frame.is_useful_frame() {
-					break 'frame;
-				}
-
-				if frame_buffer.is_empty() {
-					frames_start = pos;
-				}
-
-				frame_buffer.push(frame);
-				got_useful_frame = true;
+		// Check if the next byte is 0xFF (the first byte of an mpeg sync word).
+		// Only continue with the more expensive deku parsing step if it is.
+		let do_deku_parse = {
+			let buf = reader.fill_buf().expect("Couldn't peek ahead in the file!");
+			if buf.is_empty() {
+				// reached EOF
+				break;
 			}
-			Err(e) => {
-				match e {
-					// explicitly ignore Incomplete errors.
-					// these happen sometimes because of how deku works but they mean nothing.
-					DekuError::Incomplete(_) => (),
-					_ => eprintln!("Frame construction error at 0x{pos:08X}: {e:?}"),
+			buf[0] == 0xFF
+		};
+
+		let mut got_useful_frame = false;
+
+		if do_deku_parse {
+			match Frame::from_reader((&mut reader, 0)) {
+				Ok((_, frame)) => 'frame: {
+					if !frame.is_useful_frame() {
+						break 'frame;
+					}
+
+					if frame_buffer.is_empty() {
+						frames_start = pos;
+					}
+
+					frame_buffer.push(frame);
+					got_useful_frame = true;
 				}
+				Err(e) => eprintln!("Frame construction error at 0x{pos:08X}: {e:?}"),
 			}
 		}
 
@@ -93,8 +102,13 @@ fn work(in_file: &Path, out_dir: &Path, frame_limit: usize) {
 				frame_index += 1;
 			}
 
-			// Move the reader back to its initial position, advanced by one
-			_ = reader.seek(SeekFrom::Start(pos + 1));
+			if do_deku_parse {
+				// Move the reader back to its initial position, advanced by one
+				_ = reader.seek(SeekFrom::Start(pos + 1));
+			} else {
+				// deku didn't parse anything in this loop iteration, advance the reader's position by one byte
+				reader.consume(1);
+			}
 		}
 	}
 

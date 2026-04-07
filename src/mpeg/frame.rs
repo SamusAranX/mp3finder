@@ -34,4 +34,9 @@ impl Frame {
 
 		true
 	}
+
+	/// Returns the struct's size in bytes. Due to `Frame`'s makeup, this is always 4 bytes + (length of `data` Vec).
+	pub fn size(&self) -> usize {
+		4 + self.data.len()
+	}
 }

@@ -1,7 +1,9 @@
-use deku::{DekuRead, DekuWrite};
-use crate::mpeg::bitrates::{BITRATES_V1_L1, BITRATES_V1_L2, BITRATES_V1_L3, BITRATES_V2_L1, BITRATES_V2_L2_L3};
+use crate::mpeg::bitrates::{
+	BITRATES_V1_L1, BITRATES_V1_L2, BITRATES_V1_L3, BITRATES_V2_L1, BITRATES_V2_L2_L3,
+};
 use crate::mpeg::enums::{AudioVersion, Bitrate, ChannelMode, Emphasis, Layer, Protection};
 use crate::mpeg::samplerates::{SAMPLE_RATES_V1, SAMPLE_RATES_V2, SAMPLE_RATES_V2_5};
+use deku::{DekuRead, DekuWrite};
 
 const SYNC_WORD: u16 = 0b11111111111;
 
@@ -43,26 +45,16 @@ impl FrameHeader {
 			return Some(Bitrate::Bad);
 		}
 
-		let array_index = (self.bitrate_index-1) as usize;
+		let array_index = (self.bitrate_index - 1) as usize;
 		match (&self.version, &self.layer) {
-			(AudioVersion::Mpeg1, Layer::Layer1) => {
-				Some(BITRATES_V1_L1[array_index])
-			}
-			(AudioVersion::Mpeg1, Layer::Layer2) => {
-				Some(BITRATES_V1_L2[array_index])
-			}
-			(AudioVersion::Mpeg1, Layer::Layer3) => {
-				Some(BITRATES_V1_L3[array_index])
-			}
-			(AudioVersion::Mpeg2 | AudioVersion::Mpeg2_5, Layer::Layer1) => {
-				Some(BITRATES_V2_L1[array_index])
-			}
+			(AudioVersion::Mpeg1, Layer::Layer1) => Some(BITRATES_V1_L1[array_index]),
+			(AudioVersion::Mpeg1, Layer::Layer2) => Some(BITRATES_V1_L2[array_index]),
+			(AudioVersion::Mpeg1, Layer::Layer3) => Some(BITRATES_V1_L3[array_index]),
+			(AudioVersion::Mpeg2 | AudioVersion::Mpeg2_5, Layer::Layer1) => Some(BITRATES_V2_L1[array_index]),
 			(AudioVersion::Mpeg2 | AudioVersion::Mpeg2_5, Layer::Layer2 | Layer::Layer3) => {
 				Some(BITRATES_V2_L2_L3[array_index])
 			}
-			(_, _) => {
-				None
-			}
+			(_, _) => None,
 		}
 	}
 
