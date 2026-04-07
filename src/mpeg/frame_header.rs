@@ -82,12 +82,6 @@ impl FrameHeader {
 	}
 
 	pub fn frame_length(&self) -> Option<usize> {
-		// For Layer I files us this formula:
-		// FrameLengthInBytes = (12 * BitRate / SampleRate + Padding) * 4
-		//
-		// For Layer II & III files use this formula:
-		// FrameLengthInBytes = 144 * BitRate / SampleRate + Padding
-
 		let padding = self.padding_size() as usize;
 
 		match (&self.layer, self.bitrate(), self.sample_rate()) {

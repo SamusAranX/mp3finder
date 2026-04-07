@@ -23,11 +23,6 @@ impl Frame {
 			return false;
 		}
 
-		// match self.header.frame_length() {
-		// 	None => false,
-		// 	Some(len) => len >= 1024,
-		// }
-
 		if self.header.frame_length().is_none() {
 			return false;
 		}
